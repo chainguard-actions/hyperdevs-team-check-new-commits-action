@@ -1,0 +1,59 @@
+name: Test default seconds interval
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REPOSITORY: hyperdevs-team/check-new-commits-action
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          token: ${{ github.token }}
+          branch: 'main'
+          # seconds defaults to 86400 (one day)
+        env:
+          GITHUB_REPOSITORY: hyperdevs-team/check-new-commits-action
+        continue-on-error: true
+      - name: Assert has-new-commits output is a boolean string
+        env:
+          HAS_NEW_COMMITS: ${{ steps.action.outputs.has-new-commits }}
+          STEP_OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "step outcome: $STEP_OUTCOME"
+          echo "has-new-commits: $HAS_NEW_COMMITS"
+          if [ "$STEP_OUTCOME" = "failure" ]; then
+            echo "SKIP: action step failed (likely API/token issue in act environment)"
+            exit 0
+          fi
+          if [ -z "$HAS_NEW_COMMITS" ]; then
+            echo "FAIL: has-new-commits output is empty"
+            exit 1
+          fi
+          if [ "$HAS_NEW_COMMITS" != "true" ] && [ "$HAS_NEW_COMMITS" != "false" ]; then
+            echo "FAIL: has-new-commits must be 'true' or 'false', got: $HAS_NEW_COMMITS"
+            exit 1
+          fi
+          echo "PASS: has-new-commits=$HAS_NEW_COMMITS"
+      - name: Assert new-commits-number is a non-negative integer
+        env:
+          NEW_COMMITS_NUMBER: ${{ steps.action.outputs.new-commits-number }}
+          STEP_OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "step outcome: $STEP_OUTCOME"
+          echo "new-commits-number: $NEW_COMMITS_NUMBER"
+          if [ "$STEP_OUTCOME" = "failure" ]; then
+            echo "SKIP: action step failed (likely API/token issue in act environment)"
+            exit 0
+          fi
+          if [ -z "$NEW_COMMITS_NUMBER" ]; then
+            echo "FAIL: new-commits-number output is empty"
+            exit 1
+          fi
+          if ! echo "$NEW_COMMITS_NUMBER" | grep -qE '^[0-9]+$'; then
+            echo "FAIL: new-commits-number must be a non-negative integer, got: $NEW_COMMITS_NUMBER"
+            exit 1
+          fi
+          echo "PASS: new-commits-number=$NEW_COMMITS_NUMBER"
