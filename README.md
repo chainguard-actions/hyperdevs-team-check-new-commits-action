@@ -9,6 +9,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
 | v1.0.3 | [`v1.0.3`](https://github.com/chainguard-actions/hyperdevs-team-check-new-commits-action/tree/v1.0.3) | [`d3da6e2`](https://github.com/hyperdevs-team/check-new-commits-action/commit/d3da6e2515f640535b1708b62e18b293fe1220ed) |
+| v2.0.1 | [`v2.0.1`](https://github.com/chainguard-actions/hyperdevs-team-check-new-commits-action/tree/v2.0.1) | [`dedf5c6`](https://github.com/hyperdevs-team/check-new-commits-action/commit/dedf5c6983190ab27db843cde2965221459cdc6a) |
 
 ## Privacy
 
